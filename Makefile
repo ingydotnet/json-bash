@@ -1,13 +1,20 @@
 .PHONY: default help doc test \
     install install-lib install-doc \
-    uninstall uninstall-lib uninstall-doc \
+    uninstall uninstall-lib uninstall-doc
 
 CMD=json.bash
 
-# XXX Add submodule checker
+# XXX This is a very crude default. Be smarter here…
+PREFIX=/usr/local
+INSTALL_LIB=$(PREFIX)/lib/bash
+INSTALL_MAN=$(PREFIX)/share/man/man1
+
+# Submodules
+TEST_SIMPLE=ext/test-simple-bash
+SUBMODULE=$(TEST_SIMPLE)
 
 ##
-# User facing rules start here:
+# User targets:
 default: help
 
 help:
@@ -20,7 +27,7 @@ help:
 
 doc: doc/$(CMD).1
 
-test:
+test: $(TEST_SIMPLE)
 	prove $(PROVE_OPTIONS) test/
 
 install: install-lib install-doc
@@ -42,6 +49,12 @@ uninstall-doc:
 
 clean purge:
 	true
+
+##
+# Sanity checks:
+$(SUBMODULE):
+	@echo 'You need to run `git submodule update --init` first.' >&2
+	@exit 1
 
 ##
 # Builder rules:
