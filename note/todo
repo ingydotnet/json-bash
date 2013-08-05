@@ -1,0 +1,5 @@
+- Add submodule checker to Makefile
+- get make install to work
+- support flags for JSON.get
+- Ensure JSON.get sets proper status code
+- Allow status code in test-simple
