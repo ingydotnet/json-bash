@@ -15,7 +15,7 @@ JSON.load() {
         1) JSON__cache=$(echo -E "$1" | JSON.lex | JSON.parse) ;;
         2)
             local temp=$(echo -E "$1" | JSON.lex | JSON.parse)
-            eval $2="\$temp"
+            declare -g $2="$temp"
             ;;
         *) JSON.die 'Usage: JSON.load [<json-string> [<tree-var>]]' ;;
     esac
@@ -32,7 +32,7 @@ JSON.dump() {
             if [ "$1" == '-' ]; then
                 echo "$JSON__cache" | JSON.dump-json
             else
-                eval echo \$$1 | JSON.dump-json
+                echo ${!1} | JSON.dump-json
             fi
             ;;
         *) JSON.die 'Usage: JSON.dump [<tree-var>]' ;;
@@ -47,13 +47,25 @@ JSON.get() {
     fi
     case $# in
         1)
-            grep -Em1 "$1	" | cut -f2
+            grep -Em1 "^$1	" | cut -f2
             ;;
         2)
             if [ "$1" == '-' ]; then
-                echo "$JSON__cache" | grep -Em1 "$1	" | cut -f2
+                echo "$JSON__cache" | grep -Em1 "^$1	" | cut -f2
             else
-                eval echo \$$1 | grep -Em1 "$1	" | cut -f2
+                case $flag in
+                    s)
+                        echo "${!2}" |
+                            grep -Em1 "^$1	" |
+                            cut -f2 |
+                            perl -pe 's/^"(.*)"$/$1/ or die "JSON.get -s flag used and value not a string\n"'
+                        ;;
+                    *)
+                        echo "\"${!2}\"" |
+                            grep -Em1 "^$1	" |
+                            cut -f2
+                        ;;
+                esac
             fi
             ;;
         *) JSON.die 'Usage: JSON.get [-s|-n|-b|-z] <key-path> [<tree-var>]' ;;
@@ -76,7 +88,7 @@ JSON.put() {
                 echo "$JSON__cache" | JSON.del "$1"
                 printf "$1\t$2\n"
             else
-                eval echo \$$3 | JSON.del "$1"
+                echo ${!3} | JSON.del "$1"
                 printf "$1\t$2\n"
             fi
             ;;
@@ -94,7 +106,7 @@ JSON.del() {
             if [ "$1" == '-' ]; then
                 echo "$JSON__cache" | grep -Ev "$1	"
             else
-                eval echo \$$1 | grep -Ev "$1	"
+                echo ${!1} | grep -Ev "$1	"
             fi
             ;;
         *) JSON.die 'Usage: JSON.get [-s|-n|-b|-z] <key-path> [<tree-var>]' ;;
