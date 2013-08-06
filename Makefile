@@ -2,16 +2,16 @@
     install install-lib install-doc \
     uninstall uninstall-lib uninstall-doc
 
-CMD=json.bash
+CMD := json.bash
 
 # XXX This is a very crude default. Be smarter here…
-PREFIX=/usr/local
-INSTALL_LIB=$(PREFIX)/lib/bash
-INSTALL_MAN=$(PREFIX)/share/man/man1
+PREFIX ?= /usr/local
+INSTALL_LIB ?= $(PREFIX)/lib/bash
+INSTALL_MAN ?= $(PREFIX)/share/man/man1
 
 # Submodules
-TEST_SIMPLE=ext/test-simple-bash
-SUBMODULE=$(TEST_SIMPLE)
+TEST_SIMPLE := ext/test-simple-bash/lib/test-simple.bash
+SUBMODULE := $(TEST_SIMPLE)
 
 ##
 # User targets:
@@ -32,7 +32,7 @@ test: $(TEST_SIMPLE)
 
 install: install-lib install-doc
 
-install-lib: $(INSTALL_LIB)
+install-lib:
 	install -m 0755 lib/$(CMD) $(INSTALL_LIB)/
 
 install-doc: doc

@@ -6,6 +6,7 @@
 
 
 
++ use space around ' = ' and ' ?= ' in Makefile
 + Ensure JSON.get sets proper status code
 + support -s flag for JSON.get
 + Test JSON.get
