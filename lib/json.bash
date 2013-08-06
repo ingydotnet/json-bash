@@ -53,19 +53,10 @@ JSON.get() {
             if [ "$1" == '-' ]; then
                 echo "$JSON__cache" | grep -Em1 "^$1	" | cut -f2
             else
-                case $flag in
-                    s)
-                        echo "${!2}" |
-                            grep -Em1 "^$1	" |
-                            cut -f2 |
-                            perl -pe 's/^"(.*)"$/$1/ or die "JSON.get -s flag used and value not a string\n"'
-                        ;;
-                    *)
-                        echo "\"${!2}\"" |
-                            grep -Em1 "^$1	" |
-                            cut -f2
-                        ;;
-                esac
+                echo "\"${!2}\"" |
+                    grep -Em1 "^$1	" |
+                    cut -f2 |
+                    JSON.apply-get-flag $flag
             fi
             ;;
         *) JSON.die 'Usage: JSON.get [-s|-n|-b|-z] <key-path> [<tree-var>]' ;;
@@ -199,6 +190,43 @@ JSON.parse-error() {
     msg="JSON.parse error. Unexpected token: '$JSON_token'."
     [ -n "$1" ] && msg+=" Expected: $1."
     JSON.die "$msg"
+}
+
+JSON.apply-get-flag() {
+    local value
+    read -r value
+    case $1 in
+        s)
+            [[ $value =~ ^$JSON_STR$ ]] || {
+                echo "JSON.get -s flag used but '$value' is not a string" >&2
+                return 1
+            }
+            value="${value:1:$((${#value}-2))}"
+            ;;
+        n)
+            [[ $value =~ ^$JSON_NUM$ ]] || {
+                echo "JSON.get -n flag used but '$value' is not a number" >&2
+                return 1
+            }
+            ;;
+        b)
+            [[ $value =~ ^$JSON_BOOL$ ]] || {
+                echo "JSON.get -b flag used but '$value' is not a boolean" >&2
+                return 1
+            }
+            value=$([ $value == true ] && echo "0" || echo "1")
+            ;;
+        z)
+            [[ $value =~ ^$JSON_NULL$ ]] || {
+                echo "JSON.get -z flag used but '$value' is not a null" >&2
+                return 1
+            }
+            value=''
+            ;;
+        *) ;;
+    esac
+    echo "$value"
+    return 0
 }
 
 JSON.assert-cache() {
