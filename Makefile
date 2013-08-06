@@ -32,12 +32,12 @@ test: $(TEST_SIMPLE)
 
 install: install-lib install-doc
 
-install-lib:
+install-lib: $(INSTALL_LIB)
 	install -m 0755 lib/$(CMD) $(INSTALL_LIB)/
 
 install-doc: doc
-	install -c -d -m 0755 $(MAN1DIR)
-	install -c -m 0644 doc/$(CMD).1 $(MAN1DIR)
+	install -c -d -m 0755 $(INSTALL_MAN)
+	install -c -m 0644 doc/$(CMD).1 $(INSTALL_MAN)
 
 uninstall: uninstall-lib uninstall-doc
 
@@ -45,7 +45,7 @@ uninstall-lib:
 	rm -f $(INSTALL_LIB)/$(CMD)
 
 uninstall-doc:
-	rm -f $(MAN1DIR)/$(CMD).1
+	rm -f $(INSTALL_MAN)/$(CMD).1
 
 clean purge:
 	true
@@ -58,15 +58,19 @@ $(SUBMODULE):
 
 ##
 # Builder rules:
-$(CMD).txt: $(CMD).asc
+$(CMD).txt: doc/$(CMD).asc
 	cp $< $@
 
 %.xml: %.txt
-	asciidoc -b docbook -d manpage -f doc/asciidoc.conf
+	asciidoc -b docbook -d manpage -f doc/asciidoc.conf $^
 	rm $<
 
 %.1: %.xml
 	xmlto -m doc/manpage-normal.xsl man $^
+	mv $(CMD). $(CMD).1
 
 doc/%.1: %.1
 	mv $< $@
+
+$(INSTALL_LIB):
+	mkdir -p $@
