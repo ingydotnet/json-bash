@@ -25,8 +25,6 @@ help:
 	@echo 'uninstall  Uninstall $(CMD)'
 	@echo 'clean      Remove build/test files'
 
-doc: doc/$(CMD).1
-
 test: $(TEST_SIMPLE)
 	prove $(PROVE_OPTIONS) test/
 
@@ -35,7 +33,7 @@ install: install-lib install-doc
 install-lib: $(INSTALL_LIB)
 	install -m 0755 lib/$(CMD) $(INSTALL_LIB)/
 
-install-doc: doc
+install-doc:
 	install -c -d -m 0755 $(INSTALL_MAN)
 	install -c -m 0644 doc/$(CMD).1 $(INSTALL_MAN)
 
@@ -58,6 +56,8 @@ $(SUBMODULE):
 
 ##
 # Builder rules:
+doc: doc/$(CMD).1
+
 $(CMD).txt: doc/$(CMD).asc
 	cp $< $@
 
