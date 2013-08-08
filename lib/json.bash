@@ -15,7 +15,7 @@ JSON.load() {
         1) JSON__cache=$(echo -E "$1" | JSON.lex | JSON.parse) ;;
         2)
             local temp=$(echo -E "$1" | JSON.lex | JSON.parse)
-            declare -g $2="$temp"
+            printf -v "$2" "$temp"
             ;;
         *) JSON.die 'Usage: JSON.load [<json-string> [<tree-var>]]' ;;
     esac
