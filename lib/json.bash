@@ -9,7 +9,7 @@ JSON_VERSION=0.0.1
 #-----------------------------------------------------------------------------
 JSON.load() {
     unset JSON__cache
-    set -e -o pipefail
+    set -o pipefail
     case $# in
         0) JSON.lex | JSON.lex | JSON.parse ;;
         1) JSON__cache=$(echo -E "$1" | JSON.lex | JSON.parse) ;;
@@ -23,7 +23,7 @@ JSON.load() {
 
 JSON.dump() {
     JSON.die 'JSON.dump not yet implemented.'
-    set -e -o pipefail
+    set -o pipefail
     case $# in
         0)
             JSON.normalize | sort | JSON.emit-json
@@ -40,7 +40,7 @@ JSON.dump() {
 }
 
 JSON.get() {
-    set -e -o pipefail
+    set -o pipefail
     if [[ $# -gt 0 ]] && [[ "$1" =~ ^-([snbz])$ ]]; then
         local flag="${BASH_REMATCH[1]}"
         shift
@@ -50,7 +50,7 @@ JSON.get() {
             grep -Em1 "^$1	" | cut -f2
             ;;
         2)
-            if [ "$1" == '-' ]; then
+            if [ "$2" == '-' ]; then
                 echo "$JSON__cache" | grep -Em1 "^$1	" | cut -f2
             else
                 echo "\"${!2}\"" |
@@ -64,7 +64,7 @@ JSON.get() {
 }
 
 JSON.put() {
-    set -e -o pipefail
+    set -o pipefail
     if [[ $# -gt 0 ]] && [[ "$1" =~ ^-([snbz])$ ]]; then
         local flag="${BASH_REMATCH[1]}"
         shift
@@ -88,7 +88,7 @@ JSON.put() {
 }
 
 JSON.del() {
-    set -e -o pipefail
+    set -o pipefail
     case $# in
         1)
             grep -Ev "$1	"
@@ -105,7 +105,7 @@ JSON.del() {
 }
 
 JSON.cache() {
-    set -e -o pipefail
+    set -o pipefail
     case $# in
         0)
             echo "$JSON__cache"
