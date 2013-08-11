@@ -36,6 +36,6 @@ ok [ $? -eq 0 ]                 "JSON__cache is set"
 echo "$tree2" | grep -E '^/id' &> /dev/null
 ok [ $? -eq 0 ]  "load output contains id"
 
-ok [ $(echo "$tree2" | wc -l) -eq 12 ] \
+ok [ $(echo -n "$tree2" | wc -l) -eq 12 ] \
                                 "linear tree has 12 values"
 

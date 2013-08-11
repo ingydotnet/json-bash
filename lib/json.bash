@@ -12,10 +12,11 @@ JSON.load() {
     set -o pipefail
     case $# in
         0) JSON.lex | JSON.lex | JSON.parse ;;
-        1) JSON__cache=$(echo -E "$1" | JSON.lex | JSON.parse) ;;
-        2)
-            local temp=$(echo -E "$1" | JSON.lex | JSON.parse)
-            printf -v "$2" "$temp"
+        1) JSON__cache="$(echo -E "$1" | JSON.lex | JSON.parse)"
+            [ -n "$JSON__cache" ] && JSON__cache+=$'\n'
+            ;;
+        2) printf -v "$2" "%s" "$(echo -E "$1" | JSON.lex | JSON.parse)"
+            [ -n "${!2}" ] && printf -v "$2" "%s\n" "${!2}"
             ;;
         *) JSON.die 'Usage: JSON.load [<json-string> [<tree-var>]]' ;;
     esac
@@ -108,7 +109,7 @@ JSON.cache() {
     set -o pipefail
     case $# in
         0)
-            echo "$JSON__cache"
+            echo -n "$JSON__cache"
             ;;
         1)
             printf -v "$1" "%s" "$JSON__cache"
