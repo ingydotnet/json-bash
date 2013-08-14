@@ -42,7 +42,7 @@ JSON.dump() {
 
 JSON.get() {
     set -o pipefail
-    if [[ $# -gt 0 ]] && [[ "$1" =~ ^-([snbz])$ ]]; then
+    if [[ $# -gt 0 ]] && [[ "$1" =~ ^-([asnbz])$ ]]; then
         local flag="${BASH_REMATCH[1]}"
         shift
     fi
@@ -52,7 +52,10 @@ JSON.get() {
             ;;
         2)
             if [ "$2" == '-' ]; then
-                echo "$JSON__cache" | grep -Em1 "^$1	" | cut -f2
+                echo "$JSON__cache" |
+                    grep -Em1 "^$1	" |
+                    cut -f2 |
+                    JSON.apply-get-flag $flag
             else
                 echo "\"${!2}\"" |
                     grep -Em1 "^$1	" |
@@ -60,7 +63,7 @@ JSON.get() {
                     JSON.apply-get-flag $flag
             fi
             ;;
-        *) JSON.die 'Usage: JSON.get [-s|-n|-b|-z] <key-path> [<tree-var>]' ;;
+        *) JSON.die 'Usage: JSON.get [-a|-s|-n|-b|-z] <key-path> [<tree-var>]' ;;
     esac
 }
 
@@ -197,6 +200,11 @@ JSON.apply-get-flag() {
     local value
     read -r value
     case $1 in
+        a)
+            [[ $value =~ ^$JSON_STR$ ]] && {
+                value="${value:1:$((${#value}-2))}"
+            }
+            ;;
         s)
             [[ $value =~ ^$JSON_STR$ ]] || {
                 echo "JSON.get -s flag used but '$value' is not a string" >&2
