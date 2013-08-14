@@ -199,6 +199,11 @@ JSON.parse-error() {
 JSON.apply-get-flag() {
     local value
     read -r value
+    # For now assume null can show up instead of string or number
+    if [ "$value" == "null" ]; then
+        echo ''
+        return 0
+    fi
     case $1 in
         a)
             [[ $value =~ ^$JSON_STR$ ]] && {
