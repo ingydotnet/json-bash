@@ -20,6 +20,7 @@ JSON.load() {
             ;;
         *) JSON.die 'Usage: JSON.load [<json-string> [<tree-var>]]' ;;
     esac
+    :
 }
 
 JSON.dump() {
