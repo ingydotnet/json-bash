@@ -42,7 +42,6 @@ JSON.dump() {
 }
 
 JSON.get() {
-    set -o pipefail
     if [[ $# -gt 0 ]] && [[ "$1" =~ ^-([asnbz])$ ]]; then
         local flag="${BASH_REMATCH[1]}"
         shift
@@ -110,7 +109,6 @@ JSON.del() {
 }
 
 JSON.cache() {
-    set -o pipefail
     case $# in
         0)
             echo -n "$JSON__cache"
