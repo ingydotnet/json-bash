@@ -9,7 +9,7 @@ JSON_VERSION=0.0.1
 #-----------------------------------------------------------------------------
 JSON.load() {
     unset JSON__cache
-    set -o pipefail
+    # set -o pipefail
     case $# in
         0) JSON.lex | JSON.lex | JSON.parse ;;
         1) JSON__cache="$(echo -E "$1" | JSON.lex | JSON.parse)"
