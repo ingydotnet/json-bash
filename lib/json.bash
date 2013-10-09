@@ -48,7 +48,8 @@ JSON.get() {
     fi
     case $# in
         1)
-            grep -Em1 "^$1	" | cut -f2
+            grep -Em1 "^$1	" | cut -f2 |
+                    JSON.apply-get-flag $flag
             ;;
         2)
             if [ "$2" == '-' ]; then

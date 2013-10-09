@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PATH=lib:ext/test-simple-bash/lib:$PATH
-source test-simple.bash tests 6
+source test-simple.bash tests 7
 source json.bash
 
 tree1=$(cat test/test1.json | JSON.load)
@@ -17,6 +17,9 @@ JSON.load "$(< test/test1.json)"
 ok $?                           "JSON.load succeeded"
 ok [ "$(JSON.get '/owner/login' -)" == '"ingydotnet"' ] \
                                 "JSON.get works"
+ok [ $(cat test/test1.json | JSON.load | JSON.get -a "/owner/login") == 'ingydotnet' ] \
+    'JSON.get works with piped data'
+
 # XXX Disabling for now because we can't depend on pipefail
 # Maybe use a tee and `wc -l` and check 0 or 1
 # JSON.get '/bad-key' -

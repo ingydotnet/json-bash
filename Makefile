@@ -26,7 +26,7 @@ help:
 	@echo 'clean      Remove build/test files'
 
 test: $(TEST_SIMPLE)
-	prove $(PROVE_OPTIONS) test/
+	prove $(PROVEOPT) test/
 
 install: install-lib install-doc
 
