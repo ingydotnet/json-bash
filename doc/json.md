@@ -1,12 +1,9 @@
-json.bash()
-===========
+JSON(1) - JSON for Bash
+=======================
 
-NAME
-----
-json.bash - Load, Dump and Manipulate JSON in Bash
+[![Build Status](https://travis-ci.org/ingydotnet/json-bash.png?branch=master)](https://travis-ci.org/ingydotnet/json-bash)
 
-SYNOPSIS
---------
+## Synopsis
 
     source json.bash
 
@@ -16,8 +13,8 @@ SYNOPSIS
     JSON.put /friends/2 Jeff
     new_json=$(JSON.dump)
 
-DESCRIPTION
------------
+## Description
+
 The `json.bash` library provides functions for loading, manipulating and
 dumping JSON data.
 
@@ -55,8 +52,7 @@ Would be loaded as this linear tree:
 Since Bash has many tools for searching and manipulating text, the linear form
 works fairly well for common JSON data operations.
 
-INSTALLATION
-------------
+## Installation
 
 Just run:
 
@@ -77,13 +73,14 @@ You can change the install locations with these environment variables:
 
 Run `make help` to see all the `make` targets that are available.
 
-API FUNCTIONS
--------------
+## API Functions
+
 The library contains functions to *load* JSON to the linear form and to *dump*
 that form back into JSON. It also has functions to retrieve, modify, add and
 remove data from the linear form.
 
-JSON.load [ <json-string> [<linear-var-name>]]::
+* `JSON.load [ <json-string> [<linear-var-name>]]`
+
     This function takes JSON as input and generates a linear tree as output.
 
     With no arguments, input is read from stdin and output is written to
@@ -92,14 +89,16 @@ JSON.load [ <json-string> [<linear-var-name>]]::
     input is again provided as a string argument, and the output is copied
     into the variable name provided.
 
-JSON.dump [<linear-var-name>]::
+* `JSON.dump [<linear-var-name>]`
+
     This function takes a linear tree as input and generates JSON as output.
 
     With no arguments, input is read from stdin. With one argument, input is
     taken from the provided variable name. To use the internal cache, use `-`
     as the variable name. Output is always written to stdout.
 
-JSON.get [-a|-s|-b|-n|-z] <key-path> [<linear-var-name>]::
+* `JSON.get [-a|-s|-b|-n|-z] <key-path> [<linear-var-name>]`
+
     This function takes a key path and returns the corresponding value. If the
     key is found, the exit status is 0, otherwise it is 1. If the value is a
     string, it will be enclosed in double quotes. Otherwise it will be a
@@ -111,7 +110,8 @@ JSON.get [-a|-s|-b|-n|-z] <key-path> [<linear-var-name>]::
 
     See FLAGS below for an explanation of the flag options.
 
-JSON.put [-s|-b|-n|-z] <key-path> <new-value> [<linear-var-name>]::
+* `JSON.put [-s|-b|-n|-z] <key-path> <new-value> [<linear-var-name>]`
+
     This function adds a path/value pair to the linear tree. If the path
     already exists, the value will be replaced, otherwise it will be added.
 
@@ -121,7 +121,8 @@ JSON.put [-s|-b|-n|-z] <key-path> <new-value> [<linear-var-name>]::
     always be 0.
 
 
-JSON.del <key-path> <new-value> [<linear-var-name>]::
+* `JSON.del <key-path> <new-value> [<linear-var-name>]`
+
     This function removes a path/value pair from the linear tree, if it
     exists.
 
@@ -134,14 +135,15 @@ JSON.del <key-path> <new-value> [<linear-var-name>]::
     indicates the value is a string, the -n flag indicates a number,the -b
     flag indicates a boolean and the -z flag indicates a null value.
 
-JSON.cache [<linear-var-name>]::
+* `JSON.cache [<linear-var-name>]`
+
     Outputs the value of the internal linear tree cache string.
 
     With no arguments, the value is written to stdout. With one argument, the
     value is copied to the variable name provided.
 
-FLAGS
------
+## Flags
+
 The command flags `-a`, `-s`, `-n`, `-b` and `-z` indicate the *type* of value
 provided or expected, and they refer to Any, String, Number, Boolean and Null
 respectively. If the type of data doesn't look like the type indicated by the
@@ -163,8 +165,7 @@ successful return code.
 The `-z` flag on a `JSON.get` will turn `null` into the empty string, and for
 a `JSON.put` will turn any value into `null`.
 
-EXAMPLES
---------
+## Examples
 
     # Load JSON to linear tree
     JSON.load "$(< file.json)" tree
@@ -191,8 +192,7 @@ EXAMPLES
     # or:
     echo "$tree" | JSON.dump > new-file.json
 
-PROBLEMS
---------
+## Problems
 
 This library is meant to be useful for solving common problems involving JSON.
 However, without the native JSON object model in Bash, it becomes problematic
@@ -205,8 +205,7 @@ stay out of scope:
 * No support for key-paths that refer to objects or arrays.
 * No support for common array operations like `push`, `pop`, `splice`, etc.
 
-TODO
-----
+## Todo
 
 * Support object keys that:
   * Contain whitespace
@@ -214,8 +213,8 @@ TODO
   * Contain backslashes
 * Implement JSON.dump
 
-STATUS
-------
+## Status
+
 This library is very new, contains bugs and will almost certainly have API
 changes.
 
@@ -223,6 +222,6 @@ Please report any issues to https://github.com/ingydotnet/json-bash/issues
 
 Or find me on ingy@irc.freenode.net.
 
-AUTHOR
-------
+## Author
+
 Written by Ingy döt Net <ingy@ingy.net>

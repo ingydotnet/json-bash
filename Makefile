@@ -10,8 +10,8 @@ INSTALL_LIB ?= $(PREFIX)/lib/bash
 INSTALL_MAN ?= $(PREFIX)/share/man/man1
 
 # Submodules
-TEST_SIMPLE := ext/test-simple-bash/lib/test-simple.bash
-SUBMODULE := $(TEST_SIMPLE)
+TEST_MORE := ext/test-more-bash/lib/test/more.bash
+SUBMODULE := $(TEST_MORE)
 
 ##
 # User targets:
@@ -25,7 +25,7 @@ help:
 	@echo 'uninstall  Uninstall $(CMD)'
 	@echo 'clean      Remove build/test files'
 
-test: $(TEST_SIMPLE)
+test: $(TEST_MORE)
 	prove $(PROVEOPT) test/
 
 install: install-lib install-doc
@@ -51,23 +51,15 @@ clean purge:
 ##
 # Sanity checks:
 $(SUBMODULE):
-	@echo 'You need to run `git submodule update --init` first.' >&2
-	@exit 1
+	git submodule update --init --recursive
 
 ##
 # Builder rules:
-doc: doc/$(CMD).1
+.PHONY: doc
+doc: doc/json.1
 
-$(CMD).txt: doc/$(CMD).asc
-	cp $< $@
-
-%.xml: %.txt
-	asciidoc -b docbook -d manpage -f doc/asciidoc.conf $^
-	rm $<
-
-%.1: %.xml
-	xmlto -m doc/manpage-normal.xsl man $^
-	mv $(CMD). $(CMD).1
+%.1: %.md
+	ronn --roff < $< > $@
 
 doc/%.1: %.1
 	mv $< $@

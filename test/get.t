@@ -1,23 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-PATH=lib:ext/test-simple-bash/lib:$PATH
-source test-simple.bash tests 7
-source json.bash
+source test/setup
+
+use Test::More tests 7
+use JSON
 
 tree1=$(cat test/test1.json | JSON.load)
 ok $?                           "JSON.load succeeded"
-ok [ "$(JSON.get '/owner/login' tree1)" == '"ingydotnet"' ] \
+is "$(JSON.get '/owner/login' tree1)" '"ingydotnet"' \
                                 "JSON.get works"
-ok [ "$(JSON.get -s '/owner/login' tree1)" == 'ingydotnet' ] \
+is "$(JSON.get -s '/owner/login' tree1)" 'ingydotnet' \
                                 "JSON.get -s works"
-ok [ $(JSON.get -s '/id' tree1 2> /dev/null || echo $?) -eq 1 ] \
+is $(JSON.get -s '/id' tree1 2> /dev/null || echo $?) 1 \
                                 "JSON.get -s failure works"
 
 JSON.load "$(< test/test1.json)"
 ok $?                           "JSON.load succeeded"
-ok [ "$(JSON.get '/owner/login' -)" == '"ingydotnet"' ] \
+is "$(JSON.get '/owner/login' -)" '"ingydotnet"' \
                                 "JSON.get works"
-ok [ $(cat test/test1.json | JSON.load | JSON.get -a "/owner/login") == 'ingydotnet' ] \
+is $(cat test/test1.json | JSON.load | JSON.get -a "/owner/login")  'ingydotnet' \
     'JSON.get works with piped data'
 
 # XXX Disabling for now because we can't depend on pipefail

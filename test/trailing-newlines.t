@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-PATH=lib:ext/test-simple-bash/lib:$PATH
-source test-simple.bash tests 4
-source json.bash
+source test/setup
+
+use Test::More tests 4
+use JSON
 
 trailing_newline_re=$'\n''$'
 json_string='{"foo": "bar", "baz": "quux"}'
