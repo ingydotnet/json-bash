@@ -18,8 +18,9 @@ JSON.load "$(< test/test1.json)"
 ok $?                           "JSON.load succeeded"
 is "$(JSON.get '/owner/login' -)" '"ingydotnet"' \
                                 "JSON.get works"
-is $(cat test/test1.json | JSON.load | JSON.get -a "/owner/login")  'ingydotnet' \
-    'JSON.get works with piped data'
+is "$(cat test/test1.json | JSON.load | JSON.get -a "/owner/login")" \
+  'ingydotnet' \
+  'JSON.get works with piped data'
 
 # XXX Disabling for now because we can't depend on pipefail
 # Maybe use a tee and `wc -l` and check 0 or 1
