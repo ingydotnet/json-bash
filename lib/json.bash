@@ -150,7 +150,7 @@ JSON.parse() {
 JSON.parse-object() {
   read -r JSON_token
   while [ $JSON_token != '}' ]; do
-    [[ $JSON_token =~ ^\" ]] || JSON.parse-error STRING
+    [[ $JSON_token =~ ^\" ]] || JSON.parse-error STRING   #"
     local key="${JSON_token:1:$((${#JSON_token}-2))}"
     read -r JSON_token
     [ $JSON_token == ':' ] || JSON.parse-error "':'"
