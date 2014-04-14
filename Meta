@@ -1,0 +1,21 @@
+name: json
+version: 0.0.1
+abstract: JSON for Bash
+homepage: http://bpan.org/
+license: MIT
+copyright: 2013, 2014
+author:
+  name: Ingy döt Net
+  email: ingy@ingy.net
+  twitter: ingydotnet
+requires:
+  bash: 3.2.0
+test:
+  cmd: prove -l test/
+  requires:
+  - test-more-bash: 0.0.1
+install:
+  cmd: make install
+develop:
+  git: git:github.org:ingydotnet/json-bash.git
+  irc: irc.freenode.net/bpan
