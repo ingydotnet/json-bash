@@ -1,3 +1,5 @@
+=meta: 0.0.1
+
 name: json
 version: 0.0.1
 abstract: JSON for Bash
@@ -18,10 +20,11 @@ requires:
 test:
   cmd: make test
   requires:
-  - test-more-bash: 0.0.1
+    test-more: 0.0.1
 install:
   cmd: make install
 
 devel:
   git: git:github.org:ingydotnet/json-bash.git
   irc: irc.freenode.net/bpan
+  bug: https://github.com/ingydotnet/json-bash/issues/
