@@ -58,7 +58,7 @@ JSON.get() {
           cut -f2 |
           JSON.apply-get-flag $flag
       else
-        echo "\"${!2}\"" |
+        echo "${!2}" |
           grep -Em1 "^$1	" |
           cut -f2 |
           JSON.apply-get-flag $flag
