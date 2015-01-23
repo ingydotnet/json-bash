@@ -56,13 +56,13 @@ $(SUBMODULE):
 ##
 # Builder rules:
 .PHONY: doc
-doc: doc/json.1
+doc: ReadMe.pod doc/json.1
 
-%.1: %.md
-	ronn --roff < $< > $@
+ReadMe.pod: doc/json.swim
+	swim --to=pod --wrap --complete $< > $@
 
-doc/%.1: %.1
-	mv $< $@
+doc/json.1: doc/json.swim
+	swim --to=man $< > $@
 
 $(INSTALL_LIB):
 	mkdir -p $@
