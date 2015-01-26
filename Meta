@@ -6,7 +6,7 @@ abstract: JSON for Bash
 homepage: http://bpan.org/package/json/
 
 license: MIT
-copyright: 2013, 2014
+copyright: 2013-2015
 author:
   name: Ingy döt Net
   email: ingy@ingy.net
