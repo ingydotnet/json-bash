@@ -115,7 +115,7 @@ With no arguments, input is read from stdin. With one argument, input is taken
 from the provided variable name. To use the internal cache, use C<-> as the
 variable name. Output is always written to stdout.
 
-=item C<< JSON.get [-a|-s|-b|-n|-z] <key-path> [<linear-var-name>] >>
+=item C<< JSON.get [-a|-s|-b|-n|-z|-e] <key-path> [<linear-var-name>] >>
 
 This function takes a key path and returns the corresponding value. If the key
 is found, the exit status is 0, otherwise it is 1. If the value is a string,
@@ -193,6 +193,12 @@ successful return code.
 
 The C<-z> flag on a C<JSON.get> will turn C<null> into the empty string, and
 for a C<JSON.put> will turn any value into C<null>.
+
+The C<-e> flag on a C<JSON.get> will return the values not in its raw form, but
+pre-processed. Currently, the following two actions are supported :
+
+=item escaped double quotes are returned as non escaped,
+=item escaped backslashes are returned as non escaped.
 
 =head1 Examples
 
