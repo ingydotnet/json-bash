@@ -98,9 +98,8 @@ JSON.object() {
 JSON._object() {
   local key=$1
   if [[ -n $key && $key != "/" ]]; then
-    key=${key/\//\\/}
-    grep -E "^$key/" |
-    sed "s/^$key//"
+    key=${key//\//\\/}
+    sed -n "s/^$key//p"
   else
     cat
   fi

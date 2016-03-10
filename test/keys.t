@@ -2,7 +2,7 @@
 
 source test/setup
 
-use Test::More tests 5
+use Test::More tests 6
 use JSON
 
 tree1=$(cat test/keys.json | JSON.load)
@@ -28,3 +28,8 @@ is "$keys" \
 keys="$(JSON.keys '/' tree1)"
 is "$keys" "description"$'\n'"files" \
     "JSON.keys '/'" #'
+
+keys="$(JSON.keys '/files/file 2.txt' tree1)"
+is "$keys" \
+    "content"$'\n'"type" \
+    "JSON.keys '/files/file 2.txt'" #'
