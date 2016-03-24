@@ -22,22 +22,115 @@ JSON.load() {
   :
 }
 
+
+JSON.style() {
+  case $1 in
+    minimal)
+      JSON_INDENT=""
+      JSON_FIELD_SEP=","
+      JSON_KEY_SEP=":"
+      JSON_ARR_BEGIN="["
+      JSON_ARR_END="]"
+      JSON_OBJ_BEGIN="{"
+      JSON_OBJ_END="}"
+      ;;
+    normal)
+      JSON_INDENT=""
+      JSON_FIELD_SEP=", "
+      JSON_KEY_SEP=": "
+      JSON_ARR_BEGIN="["
+      JSON_ARR_END="]"
+      JSON_OBJ_BEGIN="{"
+      JSON_OBJ_END="}"
+      ;;
+    pretty)
+      JSON_INDENT="${2:-  }"
+      JSON_FIELD_SEP=$',\n'
+      JSON_KEY_SEP=": "
+      JSON_ARR_BEGIN=$'[\n'
+      JSON_ARR_END=$'\nINDENT]'
+      JSON_OBJ_BEGIN=$'{\n'
+      JSON_OBJ_END=$'\nINDENT}'
+      ;;
+    *) JSON.die 'Usage: JSON.style [minimal|normal|pretty [<indent-string>]]' ;;
+    esac
+}
+JSON.style normal
+
 JSON.dump() {
-  JSON.die 'JSON.dump not yet implemented.'
   set -o pipefail
   case $# in
     0)
-      JSON.normalize | sort | JSON.emit-json
+      JSON._dump
       ;;
     1)
       if [[ $1 == '-' ]]; then
-        echo "$JSON__cache" | JSON.dump-json
+        echo "$JSON__cache" | JSON.dump
       else
-        echo ${!1} | JSON.dump-json
+        echo "${!1}" | JSON.dump
       fi
       ;;
     *) JSON.die 'Usage: JSON.dump [<tree-var>]' ;;
   esac
+}
+
+JSON._indent() {
+    [ "$1" -le 0 ] || printf "$JSON_INDENT%.0s" $(seq 1 "$1")
+}
+
+JSON._dump() {
+  local stack=()
+  local prev=("/")
+  local first=""
+  while IFS=$'/\t' read -r -a line; do
+    [ ${#line[@]} -gt 0 ] || continue
+    last=$((${#line[@]}-1))
+    val="${line[$last]}"
+    unset line[$last]
+    ((last--))
+    for i in ${!line[@]}; do
+      [ "${prev[$i]}" != "${line[$i]}" ] || continue
+      while [ $i -lt ${#stack} ]; do
+        local type="${stack:0:1}"
+        stack="${stack:1}"
+        if [ "$type" = "a" ]; then
+          echo -n "${JSON_ARR_END//INDENT/$(JSON._indent ${#stack})}"
+        else
+          echo -n "${JSON_OBJ_END//INDENT/$(JSON._indent ${#stack})}"
+        fi
+      done
+      if [ $i -gt 0 ]; then
+        if [ -z "$first" ]; then
+          echo -n "$JSON_FIELD_SEP"
+        else
+          first="";
+        fi
+        echo -n "$(JSON._indent ${#stack})"
+        [ "${stack:0:1}" = "a" ] || echo -n "\"${line[$i]}\"$JSON_KEY_SEP"
+      fi
+      if [ $i -eq $last ]; then
+        echo -n "$val"
+      else
+        if [[ "${line[((i+1))]}" =~ [0-9]+ ]]; then
+          stack="a$stack";
+          echo -n "$JSON_ARR_BEGIN"
+        else
+          stack="o$stack";
+          echo -n "$JSON_OBJ_BEGIN"
+        fi
+        first="1"
+      fi
+    done
+    prev=("${line[@]}")
+  done < <(sort -k1,1V -u; )
+  for (( i=0; i<${#stack}; i++ )); do
+    if [ "${stack:$i:1}" = "a" ]; then
+      echo -n "${JSON_ARR_END//INDENT/$(JSON._indent $i)}"
+    else
+      echo -n "${JSON_OBJ_END//INDENT/$(JSON._indent $i)}"
+    fi
+  done
+  echo
 }
 
 JSON.get() {
