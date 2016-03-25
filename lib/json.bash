@@ -123,12 +123,14 @@ JSON._dump() {
     done
     prev=("${line[@]}")
   done < <(sort -k1,1V -u; )
+  local indent=$(( ${#stack} - 1 ))
   for (( i=0; i<${#stack}; i++ )); do
     if [ "${stack:$i:1}" = "a" ]; then
-      echo -n "${JSON_ARR_END//INDENT/$(JSON._indent $i)}"
+      echo -n "${JSON_ARR_END//INDENT/$(JSON._indent $indent)}"
     else
-      echo -n "${JSON_OBJ_END//INDENT/$(JSON._indent $i)}"
+      echo -n "${JSON_OBJ_END//INDENT/$(JSON._indent $indent)}"
     fi
+    (( indent-- ))
   done
   echo
 }
