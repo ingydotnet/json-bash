@@ -1,0 +1,6 @@
+#!/bin/bash
+
+PATH="$(dirname $0)/../lib:$PATH" source json.bash
+
+[ $# -gt 0 ] && JSON.style "$1" "$2"
+JSON.load | JSON.dump
