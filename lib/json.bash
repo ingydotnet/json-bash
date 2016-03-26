@@ -24,7 +24,11 @@ JSON.load() {
 
 
 JSON.style() {
-  case $1 in
+  local style="${1:?Style type is required}"
+  local indent='  '
+  [[ $# -eq 1 ]] || indent="$2"
+
+  case "$style" in
     minimal)
       JSON_INDENT=""
       JSON_FIELD_SEP=","
@@ -44,7 +48,7 @@ JSON.style() {
       JSON_OBJ_END="}"
       ;;
     pretty)
-      JSON_INDENT="${2:-  }"
+      JSON_INDENT="$indent"
       JSON_FIELD_SEP=$',\n'
       JSON_KEY_SEP=": "
       JSON_ARR_BEGIN=$'[\n'
