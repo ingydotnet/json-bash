@@ -28,7 +28,7 @@ test_dump() {
     dbg json2
     is "$json2" "$json1" "dump | load | dump produces same result as dump"
 
-    is "$(grep -o : <<<"$json1" | wc -l)" \
+    is $(grep -o : <<<"$json1" | wc -l) \
         "$(grep -oE '/[^/	]*' test/dump.data | sort -u | grep -cvE '/[0-9]*$')" \
         "dumped result contains correct number of keys"
 

@@ -122,7 +122,7 @@ JSON._dump() {
       fi
     done
     prev=("${line[@]}")
-  done < <(sort -k1,1V -u; )
+  done < <(sort -k '1,1' -u )
   local indent=$(( ${#stack} - 1 ))
   for (( i=0; i<${#stack}; i++ )); do
     if [ "${stack:$i:1}" = "a" ]; then
