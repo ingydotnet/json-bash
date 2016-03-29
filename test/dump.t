@@ -2,7 +2,7 @@
 
 source test/setup
 
-use Test::More tests 21
+use Test::More tests 27
 use JSON
 
 test_dump() {
@@ -26,6 +26,12 @@ test_dump() {
     "dumped result contains correct number of keys"
 
   like "$json1" '"x y z": *"spaces"' "keys with spaces work correctly"
+
+  json3="$(shuf test/array.data | JSON.dump)"
+  ok $? "JSON.dump succeeded"
+
+  grep -o '"[A-Z]"' <<<"$json3" | sort -c
+  ok $? "keys are correctly ordered"
 }
 
 test_dump normal
