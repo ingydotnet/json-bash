@@ -126,7 +126,10 @@ JSON._dump() {
       fi
     done
     prev=("${line[@]}")
-  done < <(sort -k '1,1' -u )
+  done < <(sed 's/\t/\n/;' |
+    sed '1~2{;s|[0-9]\{1,\}|00000000000&|g;s|0*\([0-9]\{12,\}\)|\1|g;}' |
+    paste - - |
+    sort -k '1,1' -u)
   local indent=$(( ${#stack} - 1 ))
   for (( i=0; i<${#stack}; i++ )); do
     if [ "${stack:$i:1}" = "a" ]; then
