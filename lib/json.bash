@@ -56,7 +56,7 @@ JSON.style() {
       JSON_OBJ_BEGIN=$'{\n'
       JSON_OBJ_END=$'\nINDENT}'
       ;;
-    *) JSON.die 'Usage: JSON.style [minimal|normal|pretty [<indent-string>]]' ;;
+    *) JSON.die 'Usage: JSON.style minimal|normal|pretty [<indent-string>]' ;;
     esac
 }
 JSON.style normal
