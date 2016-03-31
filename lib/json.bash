@@ -52,7 +52,7 @@ JSON.get() {
   fi
 
   # Let's see what flags there are.
-  for i in ${@}; do
+  for i in "${@}"; do
 
     # Let's check if this is a flag, key-path or the tree-var.
     if [[ $i =~ ^-([asnbze])$ ]]; then
