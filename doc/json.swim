@@ -99,7 +99,7 @@ remove data from the linear form.
   taken from the provided variable name. To use the internal cache, use `-` as
   the variable name. Output is always written to stdout.
 
-- `JSON.get [-a|-s|-b|-n|-z] <key-path> [<linear-var-name>]`
+- `JSON.get [-a|-s|-b|-n|-z|-e] <key-path> [<linear-var-name>]`
 
   This function takes a key path and returns the corresponding value. If the
   key is found, the exit status is 0, otherwise it is 1. If the value is a
@@ -175,6 +175,12 @@ successful return code.
 
 The `-z` flag on a `JSON.get` will turn `null` into the empty string, and for a
 `JSON.put` will turn any value into `null`.
+
+The `-e` flag on a `JSON.get` will return the values not in its raw form, but
+pre-processed. Currently, the following two actions are supported:
+
+- escaped double quotes are returned as non escaped,
+- escaped backslashes are returned as non escaped.
 
 = Examples
 
