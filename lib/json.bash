@@ -75,7 +75,7 @@ JSON.keys() {
   JSON.object "$@" |
     cut -f1 |
     sed "s/^\///; s/\/.*//" |
-    sort -u
+    uniq
 }
 
 JSON.object() {
