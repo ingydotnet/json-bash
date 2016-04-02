@@ -1,0 +1,19 @@
+{
+  "id": 12345678,
+  "name": "git-hub",
+  "full_name": "ingydotnet/git-hub",
+  "owner": {
+    "login": "ingydotnet",
+    "id": 12345
+  },
+  "private": false,
+  "html_url": "https://github.com/ingydotnet/git-hub",
+  "description": "Do GitHub operations from the `git` command",
+  "fork": false,
+  "homepage": null,
+  "has_issues": true,
+  "forks_count": 4,
+  "backslashed_quotes": "\"wow\"wow\"",
+  "backslashed_backslashes": "\\wow\\wow\\",
+  "backslashed_all": "\\\"wow\"\\\"wow\"\\\""
+}

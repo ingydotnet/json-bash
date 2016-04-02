@@ -41,31 +41,58 @@ JSON.dump() {
 }
 
 JSON.get() {
-  local flag=""
-  if [[ $# -gt 0 && $1 =~ ^-([asnbz])$ ]]; then
-    flag="${BASH_REMATCH[1]}"
-    shift
+  local primary_flag
+  local secondary_flags
+  local json_source
+  local json_path
+
+  # At least the source to get the json should be defined.
+  if [[ $# -lt 1 ]]; then
+    JSON.die 'Usage: JSON.get [-a|-s|-n|-b|-z|-e] <key-path> [<tree-var>]'
   fi
-  case $# in
-    1)
-      grep -Em1 "^$1	" | cut -f2 |
-          JSON.apply-get-flag "$flag"
-      ;;
-    2)
-      if [[ $2 == '-' ]]; then
-        echo "$JSON__cache" |
-          grep -Em1 "^$1	" |
-          cut -f2 |
-          JSON.apply-get-flag "$flag"
+
+  # Let's see what flags there are.
+  for i in "${@}"; do
+
+    # Let's check if this is a flag, key-path or the tree-var.
+    if [[ $i =~ ^-([asnbze])$ ]]; then
+      case $i in
+        "-a" | "-s" | "-n" | "-b" | "-z")
+          primary_flag+="${i:1}"
+          ;;
+        "-e" )
+          secondary_flags+="${i:1}"
+          ;;
+        *)
+          # Unknown option.
+          ;;
+      esac
+    else
+      if [[ ${#json_path} -eq 0 ]]; then
+        json_path=$i
+      elif [[ ${#json_source} -eq 0 ]]; then
+        json_source=$i
       else
-        echo "${!2}" |
-          grep -Em1 "^$1	" |
-          cut -f2 |
-          JSON.apply-get-flag "$flag"
+        # Too may inputs?
+        JSON.die 'Usage: JSON.get [-a|-s|-n|-b|-z|-e] <key-path> [<tree-var>]'
       fi
-      ;;
-    *) JSON.die 'Usage: JSON.get [-a|-s|-n|-b|-z] <key-path> [<tree-var>]' ;;
-  esac
+    fi
+  done
+
+  # Primary flags should be only one!
+  if [[ ${#primary_flag} -gt 1 ]]; then
+    JSON.die 'Usage: JSON.get [-a|-s|-n|-b|-z|-e] <key-path> [<tree-var>]'
+  fi
+
+  if [[ $json_source = "-" ]]; then
+    json=$(echo "$JSON__cache" | grep -Em1 "^${json_path}	" | cut -f2)
+  elif [[ ${#json_source} -gt 0 ]]; then
+    json=$(echo "${!json_source}" | grep -Em1 "^${json_path}	" | cut -f2)
+  else
+    json=$(grep -Em1 "^${json_path}	" | cut -f2)
+  fi
+
+  echo $json | JSON.apply-get-flag "$primary_flag" "$secondary_flags"
 }
 
 JSON.keys() {
@@ -235,13 +262,18 @@ JSON.parse-error() {
 
 JSON.apply-get-flag() {
   local value
+  local primary_flag=$1
+  local secondary_flags=$2
+
   read -r value
   # For now assume null can show up instead of string or number
   if [[ $value == null ]]; then
     echo ''
     return 0
   fi
-  case $1 in
+
+  # Dealing with first class actions.
+  case $primary_flag in
     a)
       [[ $value =~ ^$JSON_STR$ ]] && {
         value="${value:1:$((${#value}-2))}"
@@ -276,6 +308,26 @@ JSON.apply-get-flag() {
       ;;
     *) ;;
   esac
+
+  # Dealing with second class actions.
+  # Note that there might be more than one secondary action.
+  IFS_OLD=$IFS
+  IFS=""
+  for i in ${secondary_flags}; do
+    case $i in
+      e)
+        # Expanding escaped characters currently is supported
+        # against quotes and backslashes.
+        value=$(echo $value | sed 's/\\"/"/g')
+        value=$(echo $value | sed 's/\\\\/\\/g')
+        ;;
+      *)
+        # Do nothing.
+        ;;
+    esac
+  done
+  IFS=$IFS_OLD
+
   echo "$value"
   return 0
 }
