@@ -97,7 +97,21 @@ remove data from the linear form.
 
   With no arguments, input is read from stdin. With one argument, input is
   taken from the provided variable name. To use the internal cache, use `-` as
-  the variable name. Output is always written to stdout.
+  the variable name. Output is always written to stdout. Formatting of
+  the output can be set using JSON.style (see below).
+
+- `JSON.style minimal|normal|pretty [<indent-string>]`
+
+  This function sets style of output formatting for all subsequent calls to
+  JSON.dump.
+
+  There are three different styles available:
+    * `minimal` - single line, no unnecessary whitespace
+    * `normal` - single line, keys and values separated by single space
+    * `pretty` - one value per line, indented
+
+  Before first call to this function, the style is set to "normal".
+  The second argument is only honored for "pretty" formatting style.
 
 - `JSON.get [-a|-s|-b|-n|-z] <key-path> [<linear-var-name>]`
 

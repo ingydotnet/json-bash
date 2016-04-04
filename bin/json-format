@@ -2,4 +2,6 @@
 
 PATH="$(dirname $0)/../lib:$PATH" source json.bash
 
-JSON.load | JSON.get "$@"
+[ $# -gt 0 ] && JSON.style "$@"
+
+JSON.load | JSON.dump
